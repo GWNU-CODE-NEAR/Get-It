@@ -1,4 +1,4 @@
-package com.codenear.navi_backend.dto;
+package com.codenear.butterfly.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

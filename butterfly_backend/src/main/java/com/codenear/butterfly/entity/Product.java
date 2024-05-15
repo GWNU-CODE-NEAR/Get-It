@@ -1,4 +1,4 @@
-package com.codenear.navi_backend.entity;
+package com.codenear.butterfly.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

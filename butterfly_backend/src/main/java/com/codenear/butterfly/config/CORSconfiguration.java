@@ -1,4 +1,4 @@
-package com.codenear.navi_backend.config;
+package com.codenear.butterfly.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

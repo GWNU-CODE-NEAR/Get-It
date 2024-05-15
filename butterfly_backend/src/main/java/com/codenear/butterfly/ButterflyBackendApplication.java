@@ -1,4 +1,4 @@
-package com.codenear.navi_backend;
+package com.codenear.butterfly;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

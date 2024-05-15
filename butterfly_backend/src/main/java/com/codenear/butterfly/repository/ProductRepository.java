@@ -1,6 +1,6 @@
-package com.codenear.navi_backend.repository;
+package com.codenear.butterfly.repository;
 
-import com.codenear.navi_backend.entity.Product;
+import com.codenear.butterfly.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

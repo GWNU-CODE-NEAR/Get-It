@@ -1,8 +1,8 @@
-package com.codenear.navi_backend.service;
+package com.codenear.butterfly.service;
 
-import com.codenear.navi_backend.dto.ProductDTO;
-import com.codenear.navi_backend.entity.Product;
-import com.codenear.navi_backend.repository.ProductRepository;
+import com.codenear.butterfly.dto.ProductDTO;
+import com.codenear.butterfly.entity.Product;
+import com.codenear.butterfly.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

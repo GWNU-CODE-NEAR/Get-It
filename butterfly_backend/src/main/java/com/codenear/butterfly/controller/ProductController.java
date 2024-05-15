@@ -1,7 +1,7 @@
-package com.codenear.navi_backend.controller;
+package com.codenear.butterfly.controller;
 
-import com.codenear.navi_backend.dto.ProductDTO;
-import com.codenear.navi_backend.service.ProductService;
+import com.codenear.butterfly.dto.ProductDTO;
+import com.codenear.butterfly.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
