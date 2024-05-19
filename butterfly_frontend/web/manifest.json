@@ -1,6 +1,6 @@
 {
-    "name": "butterfly_app",
-    "short_name": "butterfly_app",
+    "name": "butterfly_frontend",
+    "short_name": "butterfly_frontend",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

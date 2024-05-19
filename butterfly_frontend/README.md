@@ -1,4 +1,4 @@
-# butterfly_app
+# butterfly_frontend
 
 A new Flutter project.
 
