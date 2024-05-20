@@ -1,6 +1,6 @@
 package com.codenear.butterfly.dto;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +8,7 @@ import java.sql.Date;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class ProductDTO {
 
     private Long productId;
@@ -19,4 +19,15 @@ public class ProductDTO {
     private String place;
     private String detail;
     private int currentPeopleNum;
+
+    public ProductDTO(Long productId, String name, int price, Date orderDate, String imageUrl, String place, String detail, int currentPeopleNum) {
+        this.productId = productId;
+        this.name = name;
+        this.price = price;
+        this.orderDate = orderDate;
+        this.imageUrl = imageUrl;
+        this.place = place;
+        this.detail = detail;
+        this.currentPeopleNum = currentPeopleNum;
+    }
 }
