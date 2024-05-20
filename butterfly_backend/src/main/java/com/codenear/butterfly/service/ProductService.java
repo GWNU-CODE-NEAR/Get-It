@@ -20,19 +20,18 @@ public class ProductService {
     public List<ProductDTO> getAllProducts() {
         List<Product> users = productRepository.findAll();
 
-        return users.stream().map(product -> {
-            ProductDTO productDTO = new ProductDTO();
-
-            productDTO.setProductId(product.getProductId());
-            productDTO.setName(product.getName());
-            productDTO.setPrice(product.getPrice());
-            productDTO.setOrderDate(product.getOrderDate());
-            productDTO.setImageUrl(product.getImageUrl());
-            productDTO.setPlace(product.getPlace());
-            productDTO.setDetail(product.getDetail());
-            productDTO.setCurrentPeopleNum(product.getCurrentPeopleNum());
-            return productDTO;
-        }).collect(Collectors.toList());
+        return users.stream()
+                .map(user -> ProductDTO.builder()
+                        .productId(user.getProductId())
+                        .name(user.getName())
+                        .price(user.getPrice())
+                        .orderDate(user.getOrderDate())
+                        .imageUrl(user.getImageUrl())
+                        .place(user.getPlace())
+                        .detail(user.getDetail())
+                        .currentPeopleNum(user.getCurrentPeopleNum())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @CacheEvict(value = "ProductAllCache", allEntries = true)
