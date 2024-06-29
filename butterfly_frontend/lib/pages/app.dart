@@ -1,8 +1,15 @@
+import 'package:butterfly_app/pages/home.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:butterfly_app/pages/favorite.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:butterfly_app/repository/contents_repository.dart';
+import 'package:butterfly_app/utils/data_utils.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:butterfly_app/theme/colors.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
-import 'home.dart';
+import 'detail.dart';
 
 class App extends StatefulWidget {
   App({Key? key}) : super(key: key);
@@ -12,64 +19,16 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int _currentPageIndex = 0;
+  late int _currentPageIndex;
 
   @override
   void initState() {
     super.initState();
     _currentPageIndex = 0;
+    
   }
 
-  /*
-   * bottomNavigation UI
-   */
-  Widget _bottomNavigationWidget() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      currentIndex: _currentPageIndex,
-      onTap: (index) {
-        setState(() {
-          _currentPageIndex = index;
-        });
-      },
-      selectedItemColor: Colors.black,
-      items: <BottomNavigationBarItem>[
-        _bottomNavigationBarItem("home", "홈"),
-        _bottomNavigationBarItem("notes", "동네생활"),
-        _bottomNavigationBarItem("location", "내 근처"),
-        _bottomNavigationBarItem("chat", "채팅"),
-        _bottomNavigationBarItem("user", "나의 당근"),
-      ],
-    );
-  }
-
-  BottomNavigationBarItem _bottomNavigationBarItem(
-      String iconName, String name) {
-    return BottomNavigationBarItem(
-      icon: SvgPicture.asset(
-        "assets/svg/${iconName}_off.svg",
-        width: 22,
-      ),
-      activeIcon: SvgPicture.asset(
-        "assets/svg/${iconName}_on.svg",
-        width: 22,
-      ),
-      label: name,
-      /*
-      title: Padding(
-        padding: const EdgeInsets.only(top: 4.0),
-        child: Text(
-          name,
-          style: TextStyle(fontSize: 12),
-        ),
-      ),*/
-    );
-  }
-
-  /*
-   * body UI
-   */
-  Widget _bodyWidget() {
+  Widget _bodyWidget(){
     switch (_currentPageIndex) {
       case 0:
         return Home();
@@ -83,21 +42,48 @@ class _AppState extends State<App> {
       case 3:
         return Container();
         break;
-      case 4:
-        return MyFavoriteContents();
-        break;
     }
     return Container();
   }
 
-  /*
-   * Home 위젯 구성
-   */
+  BottomNavigationBarItem _bottomNavigationBarItem(String iconName, String label) {
+    return BottomNavigationBarItem(
+      icon: Padding(
+        padding: const EdgeInsets.only(bottom: 5),
+        child: SvgPicture.asset("assets/svg/${iconName}_off.svg", width: 22,),
+        ),
+      activeIcon: Padding(
+        padding: const EdgeInsets.only(bottom: 5),
+        child: SvgPicture.asset("assets/svg/${iconName}_on.svg", width: 22,),
+        ),
+      label: label,
+    );
+  }
+
+  Widget _bottomNavigationBarWidget() {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      onTap: (int index){
+        setState(() {
+          _currentPageIndex = index;
+        });
+      },
+      selectedFontSize: 12,
+      currentIndex: _currentPageIndex,
+      selectedItemColor: Colors.black,
+      items: [
+        _bottomNavigationBarItem("home", "나비"),
+        _bottomNavigationBarItem("chat", "채팅"),
+        _bottomNavigationBarItem("heart", "관심목록"),
+        _bottomNavigationBarItem("user", "내 정보"),
+      ],);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _bodyWidget(),
-      bottomNavigationBar: _bottomNavigationWidget(),
+      bottomNavigationBar: _bottomNavigationBarWidget(),
     );
   }
 }
