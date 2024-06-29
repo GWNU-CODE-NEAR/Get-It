@@ -1,215 +1,201 @@
 import 'package:flutter/material.dart';
-import 'package:butterfly_app/repository/contents_repository.dart';
-import 'package:butterfly_app/utils/data_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'detail.dart';
+import 'package:butterfly_app/theme/colors.dart';
+import 'package:intl/intl.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
-  _HomeState createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  final ContentsRepository contentsRepository = ContentsRepository();
-  late String currentLocation;
-  final Map<String, String> locationTypeToString = {
-    "ara": "아라동",
-    "ora": "오라동",
-    "donam": "도남동",
-  };
-  late bool isLoading;
+  List<Map<String, String>> datas = [];
 
   @override
   void initState() {
     super.initState();
-    currentLocation = "ara";
-    isLoading = false;
+    datas = [
+      // json으로 받아오는 부분
+      {
+        "image": "assets/images/1.png",
+        "store": "샐리샐러드앤",
+        "name": "샐리 샐러드 정식 도시락세트 A",
+        "price": "10000",
+        "likes": "2",
+      },
+      {
+        "image": "assets/images/2.png",
+        "store": "피플",
+        "name": "생크림 와플",
+        "price": "2500",
+        "likes": "0",
+      },
+      {
+        "image": "assets/images/3.png",
+        "store": "삐삐네반찬",
+        "name": "꼬마김밥",
+        "price": "1300",
+        "likes": "2",
+      },
+      {
+        "image": "assets/images/ara-4.jpg",
+        "store": "애플",
+        "name": "iPad Pro",
+        "price": "700000",
+        "likes": "0",
+      },
+    ];
   }
 
-  /*
-  * appBar Widget 구현
-  */
-  PreferredSizeWidget _appbarWidget() {
+  final oCcy = new NumberFormat("#,###", "ko_KR");
+  String calcStringToWon(String priceString) {
+    return "${oCcy.format(int.parse(priceString))}원";
+  }
+
+  AppBar _appbarWidget() {
     return AppBar(
-      title: GestureDetector(
-        onTap: () {
-          print("click event");
-        },
-        child: PopupMenuButton<String>(
-          offset: Offset(0, 20),
-          shape: ShapeBorder.lerp(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-              1),
-          child: Row(
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Text(locationTypeToString[currentLocation] as String),
-              Icon(Icons.arrow_drop_down),
+              IconButton(
+                  onPressed: () {}, icon: const Icon(Icons.arrow_back_ios, size: 30)),
+              IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.location_on_outlined, size: 30)),
+              const Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: Text(
+                  "강원특별자치도 원주시 흥업면",
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900),
+                ),
+              ),
             ],
           ),
-          onSelected: (String value) {
-            setState(() {
-              currentLocation = value;
-            });
-          },
-          itemBuilder: (BuildContext context) {
-            return [
-              PopupMenuItem(
-                value: "ara",
-                child: Text("아라동"),
+          const Row(
+            children: [
+              Text(
+                "전체",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
-              PopupMenuItem(
-                value: "ora",
-                child: Text("오라동"),
-              )
-            ];
-          },
-        ),
+              SizedBox(width: 30),
+              Text(
+                "음식",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              SizedBox(width: 30),
+              Text(
+                "생활용품",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
-      elevation: 1, // 그림자를 표현되는 높이 3d 측면의 높이를 뜻함.
       actions: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-        IconButton(onPressed: () {}, icon: Icon(Icons.tune)),
         IconButton(
           onPressed: () {},
-          icon: SvgPicture.asset(
-            "assets/svg/bell.svg",
-            width: 22,
-          ),
+          icon: const Icon(Icons.more_vert),
         ),
       ],
     );
   }
 
-  Future<List<Map<String, String>>> _loadContents() async {
-    List<Map<String, String>> responseData =
-    await contentsRepository.loadContentsFromLocation(currentLocation);
-    return responseData;
-  }
-
-  Widget _makeDataList(List<Map<String, String>> datas) {
-    int size = datas == null ? 0 : datas.length;
-    return ListView.separated(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      physics: ClampingScrollPhysics(), // bounce 효과를 제거 할 수 있다.
-      itemBuilder: (BuildContext context, int index) {
-        if (datas != null && datas.length > 0) {
-          Map<String, String> data = datas[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return DetailContentView(data: data);
-              }));
-            },
-            child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      child: Hero(
-                        tag: data["cid"] as String,
-                        child: Image.asset(
-                          data["image"] as String,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        height: 100,
-                        padding: const EdgeInsets.only(left: 20, top: 2),
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              data["title"] as String,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              data["location"] as String,
-                              style: TextStyle(
-                                  fontSize: 12, color: Color(0xff999999)),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              DataUtils.calcStringToWon(
-                                  data["price"] as String),
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      height: 18,
-                                      child: SvgPicture.asset(
-                                        "assets/svg/heart_off.svg",
-                                        width: 13,
-                                        height: 13,
-                                      ),
-                                    ),
-                                    SizedBox(width: 3),
-                                    Text(data["likes"] as String),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                )),
-          );
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-      itemCount: size,
-      separatorBuilder: (BuildContext context, int index) {
-        return Container(
-          height: 1,
-          color: Colors.black.withOpacity(0.1),
-        );
-      },
-    );
-  }
-
-  /*
-   * body UI
-   */
   Widget _bodyWidget() {
-    return FutureBuilder<List<Map<String, String>>>(
-      future: _loadContents(),
-      builder: (BuildContext context,
-          AsyncSnapshot<List<Map<String, String>>> snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text("데이터 오류"));
-        }
-        if (snapshot.hasData) {
-          return _makeDataList(snapshot.data ?? []);
-        }
-        return Center(child: Text("해당 지역에 데이터가 없습니다."));
-      },
-    );
+    return ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        itemBuilder: (BuildContext _context, int index) {
+          String imagePath = datas[index]["image"] ?? 'assets/images/ara-9.png';
+          String storePath = datas[index]["store"] ?? 'store';
+          String namePath = datas[index]["name"] ?? 'name';
+          String pricePath = datas[index]["price"] ?? '2000';
+
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  child: Image.asset(
+                    imagePath,
+                    width: 120,
+                    height: 120,
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                      padding: EdgeInsets.only(left: 20),
+                      height: 100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            storePath,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w900, fontSize: 13),
+                          ),
+                          Text(
+                            namePath,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            pricePath,
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.logocolor,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: const Text(
+                                    "공동구매",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      )),
+                ),
+              ],
+            ),
+          );
+        },
+        separatorBuilder: (BuildContext _context, int index) {
+          return Container(
+            height: 1,
+            color: AppColors.linecolor,
+          );
+        },
+        itemCount: 4);
   }
 
   @override
